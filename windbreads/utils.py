@@ -2,11 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import platform
 import pickle
 
 
 def get_copy_right(text=None):
     return text if text else '(C) Nypro & Jabil Shanghai TE Support'
+
+
+def get_platform_info():
+    return '{} ({})\n{}'.format(platform.platform(),
+                                platform.machine(),
+                                platform.processor())
 
 
 def dump_pickle(data, pk_file, silent=True):

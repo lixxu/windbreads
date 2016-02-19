@@ -6,6 +6,35 @@ import platform
 import pickle
 
 
+def tt(text, lang=None, po={}):
+    if lang:
+        return po.get(lang, {}).get(text, text)
+
+    return text
+
+
+def tr_text(text, t=None):
+    return t(text) if t else text
+
+
+def get_lang_list(names=['en', 'zh']):
+    return [get_lang_name(lang) for lang in names]
+
+
+def get_lang_name(lang):
+    if lang == 'zh':
+        return 'Chinese - 简体中文'
+    else:
+        return 'en'
+
+
+def get_lang_key(name):
+    if 'Chinese' in name or 'Simplied' in name:
+        return 'zh'
+
+    return 'en'
+
+
 def get_copy_right(text=None):
     return text if text else '(C) Nypro & Jabil Shanghai TE Support'
 

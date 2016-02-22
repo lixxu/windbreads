@@ -2,18 +2,32 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import subprocess
 import platform
 import pickle
 
 
+def call_cmd(args):
+    """Run 'command' windowless and waits until finished."""
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    return subprocess.Popen(args, startupinfo=startupinfo).wait()
+
+
 def tt(text, lang=None, po={}):
     if lang:
-        return po.get(lang, {}).get(text, text)
+        mo = po.get(lang, {})
+        if mo:
+            if text in mo:
+                return mo[text]
+
+            return mo.get(text.lower(), text)
 
     return text
 
 
-def tr_text(text, t=None):
+def ttt(text, t=None):
+    """Try Translate Text."""
     return t(text) if t else text
 
 
@@ -25,7 +39,7 @@ def get_lang_name(lang):
     if lang == 'zh':
         return 'Chinese - 简体中文'
     else:
-        return 'en'
+        return 'English'
 
 
 def get_lang_key(name):

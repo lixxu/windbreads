@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import sys
 import win32gui
 import win32con
-
+import win32process
 
 FS_CODING = sys.getfilesystemencoding()
 
@@ -14,11 +14,18 @@ def get_child(parent=0, child=None, cls_name=None, window_name=None):
     return win32gui.FindWindowEx(parent, child, cls_name, window_name)
 
 
-def get_text(hwnd):
-    buf_size = 1 + win32gui.SendMessage(hwnd, win32con.WM_GETTEXTLENGTH, 0, 0)
-    buf = win32gui.PyMakeBuffer(buf_size)
-    win32gui.SendMessage(hwnd, win32con.WM_GETTEXT, buf_size, buf)
-    return buf[:buf_size - 1]
+def get_text(hwnd, safe=False, safe_text=None):
+    try:
+        buf_size = 1 + win32gui.SendMessage(hwnd, win32con.WM_GETTEXTLENGTH,
+                                            0, 0)
+        buf = win32gui.PyMakeBuffer(buf_size)
+        win32gui.SendMessage(hwnd, win32con.WM_GETTEXT, buf_size, buf)
+        return buf[:buf_size - 1]
+    except:
+        if safe:
+            return safe_text
+        else:
+            raise
 
 
 def compare_text(src, dst, rule='=', re_rule=None):
@@ -30,6 +37,19 @@ def compare_text(src, dst, rule='=', re_rule=None):
         return re_rule.match(src)
     else:
         return src == dst
+
+
+def check_pid(hwnd, pid):
+    if pid in win32process.GetWindowThreadProcessId(hwnd):
+        bring_foreground(hwnd)
+
+
+def show_window_by_pid(pid):
+    return win32gui.EnumWindows(check_pid, pid)
+
+
+def bring_foreground(hwnd):
+    win32gui.SetForegroundWindow(hwnd)
 
 
 def find_handler(dst, max_try=10000, rule='=', re_rule=None, debug=False):

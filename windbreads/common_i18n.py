@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 Usually used translation text
 '''
 
+en = {'&Language': '&Language (语言)'}
 zh = {'&Settings...': '设置 (&S)',
       '&Update settings': '更改设置 (&U)',
       'Update settings': '更改设置',
@@ -106,3 +107,4 @@ zh = {'&Settings...': '设置 (&S)',
       }
 
 zh.update({k.lower(): v for k, v in zh.items()})
+en.update({k.lower(): v for k, v in en.items()})

@@ -5,6 +5,11 @@ from __future__ import unicode_literals
 import subprocess
 import platform
 import pickle
+import chardet
+
+
+def detect_encoding(text):
+    return chardet.detect(text)
 
 
 def call_cmd(args):

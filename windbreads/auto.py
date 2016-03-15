@@ -81,3 +81,11 @@ def press_button(hwnd):
 def close_window(hwnd, force=False):
     if force or is_visible(hwnd):
         win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+
+
+def get_foreground_window():
+    return win32gui.GetForegroundWindow()
+
+
+def get_foreground_window_text(hwnd):
+    return win32gui.GetWindowText(hwnd)

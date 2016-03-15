@@ -104,6 +104,7 @@ zh = {'&Settings...': '设置 (&S)',
       'Please close other dialogs': '请关闭其它窗口',
       'Please stop before quiting': '退出之前请先停止',
       'Restore': '还原',
+      'Please login': '请登录',
       }
 
 zh.update({k.lower(): v for k, v in zh.items()})

@@ -24,11 +24,11 @@ def call_cmd(args):
 def update_t(self, lang=None, zh=None, en=None):
     czh = common_i18n.zh.copy()
     if zh:
-        zh.update(zh)
+        czh.update(zh)
 
     cen = common_i18n.en.copy()
     if en:
-        en.update(en)
+        cen.update(en)
 
     self.t = partial(tt, lang=lang, po=dict(zh=czh, en=cen))
 

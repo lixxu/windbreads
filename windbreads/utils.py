@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from functools import partial
 import subprocess
 import platform
 import pickle
 import chardet
+import common_i18n
 
 
 def detect_encoding(text):
@@ -17,6 +19,18 @@ def call_cmd(args):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     return subprocess.Popen(args, startupinfo=startupinfo).wait()
+
+
+def update_t(self, lang=None, zh=None, en=None):
+    czh = common_i18n.zh.copy()
+    if zh:
+        zh.update(zh)
+
+    cen = common_i18n.en.copy()
+    if en:
+        en.update(en)
+
+    self.t = partial(tt, lang=lang, po=dict(zh=czh, en=cen))
 
 
 def tt(text, lang=None, po={}):

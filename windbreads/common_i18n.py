@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 '''
-Usually used translation text
+Common translation text
 '''
 
 en = {'&Language': '&Language (语言)'}

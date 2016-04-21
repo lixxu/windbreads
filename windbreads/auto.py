@@ -6,6 +6,7 @@ import sys
 import win32gui
 import win32con
 import win32process
+import win32com.client
 
 FS_CODING = sys.getfilesystemencoding()
 
@@ -14,7 +15,7 @@ def get_child(parent=0, child=None, cls_name=None, window_name=None):
     return win32gui.FindWindowEx(parent, child, cls_name, window_name)
 
 
-def get_text(hwnd, safe=False, safe_text=None):
+def get_text(hwnd, safe=True, safe_text=None):
     try:
         buf_size = 1 + win32gui.SendMessage(hwnd, win32con.WM_GETTEXTLENGTH,
                                             0, 0)
@@ -49,6 +50,8 @@ def show_window_by_pid(pid):
 
 
 def bring_foreground(hwnd):
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys('%')
     win32gui.SetForegroundWindow(hwnd)
 
 
@@ -57,7 +60,10 @@ def find_handler(dst, max_try=10000, rule='=', re_rule=None, debug=False):
     i = 0
     while i <= max_try:
         i += 1
-        text = get_text(hwnd).decode(FS_CODING)
+        text = get_text(hwnd)
+        if text is not None:
+            text = text.decode(FS_CODING)
+
         if debug:
             print(type(text), text)
 

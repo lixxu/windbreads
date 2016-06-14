@@ -15,6 +15,6 @@ def encrypt(text, key, iv, encoding='utf-8'):
 def decrypt(text, key, iv, encoding='utf-8'):
     text = AES.new(key, AES.MODE_CFB, iv).decrypt(text)
     if not isinstance(text, unicode):
-        text = text.decode('utf-8', 'ignore')
+        text = text.decode(encoding, 'ignore')
 
     return text

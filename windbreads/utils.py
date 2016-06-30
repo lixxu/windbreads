@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import sys
+import os.path
 from functools import partial
 import subprocess
 import platform
@@ -12,6 +14,15 @@ import common_i18n
 
 def detect_encoding(text):
     return chardet.detect(text)
+
+
+def get_app_dir():
+    app_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+    fs_encoding = sys.getfilesystemencoding()
+    if not isinstance(app_dir, unicode):
+        app_dir = app_dir.decode(fs_encoding)
+
+    return app_dir
 
 
 def call_cmd(args):

@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from Crypto.Cipher import AES
+try:
+    from Crypto.Cipher import AES
+except ImportError:
+    from Cryptodome.Cipher import AES
 
 
 def encrypt(text, key, iv, encoding='utf-8'):

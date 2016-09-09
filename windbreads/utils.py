@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 import sys
+import os
 import os.path
 from functools import partial
 import subprocess
@@ -109,3 +110,49 @@ def load_pickle(pk_file, silent=True):
             return {}
 
         raise
+
+
+def make_shortcut(lnk_path, target, w_dir, icon=None):
+    from win32com.client import Dispatch
+
+    shell = Dispatch('WScript.Shell')
+    shortcut = shell.CreateShortCut(lnk_path)
+    shortcut.Targetpath = target
+    shortcut.WorkingDirectory = w_dir
+    if not icon:
+        icon = target
+
+    shortcut.IconLocation = icon
+    shortcut.save()
+
+
+def get_startup_folder(all_user=False):
+    release = platform.release()
+    if release == '7':  # win7, win2008, ...
+        return get_win7_startup(all_user)
+    elif release == 'XP':
+        return get_xp_startup(all_user)
+    elif release == '2003Server':
+        return get_win2k3_startup(all_user)
+    else:
+        return 'Not implemented'
+
+
+def get_xp_startup(all_user=False):
+    folder = os.environ['ALLUSERSPROFILE' if all_user else 'USERPROFILE']
+    return os.path.join(folder, 'Start Menu', 'Programs', 'Startup')
+
+
+def get_win7_startup(all_user=False):
+    if all_user:
+        folder = os.environ['ALLUSERSPROFILE']
+        subs = r'Microsoft\Windows\Start Menu\Programs\Startup'
+    else:
+        folder = os.environ['USERPROFILE']
+        subs = r'AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
+
+    return os.path.join(folder, subs)
+
+
+def get_win2k3_startup(all_user=False):
+    return get_xp_startup(all_user)

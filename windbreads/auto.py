@@ -93,5 +93,23 @@ def get_foreground_window():
     return win32gui.GetForegroundWindow()
 
 
-def get_foreground_window_text(hwnd):
+def get_window_text(hwnd):
     return win32gui.GetWindowText(hwnd)
+
+
+def get_window_pos_and_size(hwnd):
+    rect = win32gui.GetWindowRect(hwnd)
+    x = rect[0]
+    y = rect[1]
+    return x, y, rect[2] - x, rect[3] - y
+
+
+def move_to(hwnd, x, y, w, h, repaint=True):
+    win32gui.MoveWindow(hwnd, x, y, w, h, repaint)
+
+
+def send_text(hwnd, text, enter=True):
+    win32gui.SendMessage(hwnd, win32con.WM_SETTEXT, None, '{}'.format(text))
+    if enter:
+        win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
+        win32gui.PostMessage(hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)

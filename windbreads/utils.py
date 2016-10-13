@@ -33,6 +33,12 @@ def call_cmd(args):
     return subprocess.Popen(args, startupinfo=startupinfo).wait()
 
 
+def run_cmd(cmd):
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    subprocess.call(cmd, startupinfo=startupinfo)
+
+
 def update_t(self, lang=None, zh=None, en=None):
     czh = common_i18n.zh.copy()
     if zh:

@@ -3,12 +3,19 @@
 
 from __future__ import unicode_literals
 import sys
+import ctypes
 import win32gui
 import win32con
 import win32process
 import win32com.client
 
 FS_CODING = sys.getfilesystemencoding()
+EnumWindows = ctypes.windll.user32.EnumWindows
+EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int,
+                                     ctypes.POINTER(ctypes.c_int))
+GetWindowText = ctypes.windll.user32.GetWindowTextW
+GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
+IsWindowVisible = ctypes.windll.user32.IsWindowVisible
 
 
 def get_child(parent=0, child=None, cls_name=None, window_name=None):
@@ -55,7 +62,7 @@ def bring_foreground(hwnd):
     win32gui.SetForegroundWindow(hwnd)
 
 
-def find_handler(dst, max_try=10000, rule='=', re_rule=None, debug=False):
+def find_handler2(dst, max_try=10000, rule='=', re_rule=None, debug=False):
     hwnd = get_child()
     i = 0
     while i <= max_try:
@@ -73,6 +80,23 @@ def find_handler(dst, max_try=10000, rule='=', re_rule=None, debug=False):
         hwnd = get_child(child=hwnd)
 
     return None
+
+
+def find_handler(dst, rule='=', re_rule=None, debug=False):
+    handlers = []
+
+    def foreach_window(hwnd, l_param):
+        if IsWindowVisible(hwnd):
+            length = GetWindowTextLength(hwnd)
+            buff = ctypes.create_unicode_buffer(length + 1)
+            GetWindowText(hwnd, buff, length + 1)
+            if compare_text(buff.value, dst, rule, re_rule):
+                handlers.append(hwnd)
+
+        return True
+
+    EnumWindows(EnumWindowsProc(foreach_window), 0)
+    return handlers[0] if handlers else None
 
 
 def is_visible(hwnd):

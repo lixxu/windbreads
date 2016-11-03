@@ -26,17 +26,19 @@ def get_app_dir():
     return app_dir
 
 
+def get_startupinfo():
+    si = subprocess.STARTUPINFO()
+    si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    return si
+
+
 def call_cmd(args):
     """Run 'command' windowless and waits until finished."""
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    return subprocess.Popen(args, startupinfo=startupinfo).wait()
+    return subprocess.Popen(args, startupinfo=get_startupinfo()).wait()
 
 
 def run_cmd(cmd):
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    subprocess.call(cmd, startupinfo=startupinfo)
+    subprocess.call(cmd, startupinfo=get_startupinfo())
 
 
 def update_t(self, lang=None, zh=None, en=None):

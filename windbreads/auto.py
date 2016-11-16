@@ -16,13 +16,14 @@ EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int,
 GetWindowText = ctypes.windll.user32.GetWindowTextW
 GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
 IsWindowVisible = ctypes.windll.user32.IsWindowVisible
+SetWindowText = ctypes.windll.user32.SetWindowTextA
 
 
 def get_child(parent=0, child=None, cls_name=None, window_name=None):
     return win32gui.FindWindowEx(parent, child, cls_name, window_name)
 
 
-def get_text(hwnd, safe=True, safe_text=None):
+def get_text(hwnd, safe=True, safe_text=''):
     try:
         buf_size = 1 + win32gui.SendMessage(hwnd, win32con.WM_GETTEXTLENGTH,
                                             0, 0)
@@ -62,41 +63,39 @@ def bring_foreground(hwnd):
     win32gui.SetForegroundWindow(hwnd)
 
 
-def find_handler2(dst, max_try=10000, rule='=', re_rule=None, debug=False):
-    hwnd = get_child()
-    i = 0
-    while i <= max_try:
-        i += 1
-        text = get_text(hwnd)
-        if text is not None:
-            text = text.decode(FS_CODING)
+def show_window(hwnd, cmd=None):
+    if cmd is None:
+        cmd = win32con.SW_SHOW
 
-        if debug:
-            print(type(text), text)
-
-        if text and compare_text(text, dst, rule, re_rule):
-            return hwnd
-
-        hwnd = get_child(child=hwnd)
-
-    return None
+    win32gui.ShowWindow(hwnd, cmd)
 
 
-def find_handler(dst, rule='=', re_rule=None, debug=False):
+def get_handler_text(hwnd):
+    length = GetWindowTextLength(hwnd)
+    buff = ctypes.create_unicode_buffer(length + 1)
+    GetWindowText(hwnd, buff, length + 1)
+    return buff.value
+
+
+def get_all_handlers(visible=True):
     handlers = []
 
     def foreach_window(hwnd, l_param):
-        if IsWindowVisible(hwnd):
-            length = GetWindowTextLength(hwnd)
-            buff = ctypes.create_unicode_buffer(length + 1)
-            GetWindowText(hwnd, buff, length + 1)
-            if compare_text(buff.value, dst, rule, re_rule):
-                handlers.append(hwnd)
+        if not visible or IsWindowVisible(hwnd):
+            handlers.append((hwnd, get_handler_text(hwnd)))
 
         return True
 
     EnumWindows(EnumWindowsProc(foreach_window), 0)
-    return handlers[0] if handlers else None
+    return handlers
+
+
+def find_handler(dst, rule='=', re_rule=None, debug=False, visible=True):
+    for hwnd, text in get_all_handlers(visible):
+        if compare_text(text, dst, rule, re_rule):
+            return hwnd
+
+    return None
 
 
 def is_visible(hwnd):
@@ -117,8 +116,8 @@ def get_foreground_window():
     return win32gui.GetForegroundWindow()
 
 
-def get_window_text(hwnd):
-    return win32gui.GetWindowText(hwnd)
+def get_window_text(hwnd, safe_text=''):
+    return win32gui.GetWindowText(hwnd) or safe_text
 
 
 def get_window_pos_and_size(hwnd):
@@ -132,8 +131,22 @@ def move_to(hwnd, x, y, w, h, repaint=True):
     win32gui.MoveWindow(hwnd, x, y, w, h, repaint)
 
 
-def send_text(hwnd, text, enter=True):
-    win32gui.SendMessage(hwnd, win32con.WM_SETTEXT, None, '{}'.format(text))
+def set_text(hwnd, text):
+    SetWindowText(hwnd, ctypes.c_char_p(text))
+
+
+def send_chars(hwnd, text, enter=False):
+    [win32gui.SendMessage(hwnd, win32con.WM_CHAR, ord(c), 0) for c in text]
+    if enter:
+        win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
+        win32gui.PostMessage(hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
+
+
+def send_text(hwnd, text, enter=False):
+    if isinstance(text, unicode):
+        text = text.encode(FS_CODING)
+
+    win32gui.SendMessage(hwnd, win32con.WM_SETTEXT, 0, text)
     if enter:
         win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
         win32gui.PostMessage(hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)

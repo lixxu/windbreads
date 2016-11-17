@@ -17,6 +17,7 @@ GetWindowText = ctypes.windll.user32.GetWindowTextW
 GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
 IsWindowVisible = ctypes.windll.user32.IsWindowVisible
 SetWindowText = ctypes.windll.user32.SetWindowTextA
+SetCursorPos = ctypes.windll.user32.SetCursorPos
 
 
 def get_child(parent=0, child=None, cls_name=None, window_name=None):
@@ -122,13 +123,16 @@ def get_window_text(hwnd, safe_text=''):
 
 def get_window_pos_and_size(hwnd):
     rect = win32gui.GetWindowRect(hwnd)
-    x = rect[0]
-    y = rect[1]
+    x, y = rect[0], rect[1]
     return x, y, rect[2] - x, rect[3] - y
 
 
 def move_to(hwnd, x, y, w, h, repaint=True):
     win32gui.MoveWindow(hwnd, x, y, w, h, repaint)
+
+
+def set_cursor_pos(x, y):
+    SetCursorPos((int(x), int(y)))
 
 
 def set_text(hwnd, text):

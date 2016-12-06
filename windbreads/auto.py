@@ -34,8 +34,8 @@ def get_text(hwnd, safe=True, safe_text=''):
     except:
         if safe:
             return safe_text
-        else:
-            raise
+
+        raise
 
 
 def compare_text(src, dst, rule='=', re_rule=None):
@@ -121,6 +121,16 @@ def get_window_text(hwnd, safe_text=''):
     return win32gui.GetWindowText(hwnd) or safe_text
 
 
+def get_class_name(hwnd, safe=True):
+    try:
+        return win32gui.GetClassName(hwnd)
+    except:
+        if safe:
+            return ''
+
+        raise
+
+
 def get_window_pos_and_size(hwnd):
     rect = win32gui.GetWindowRect(hwnd)
     x, y = rect[0], rect[1]
@@ -132,7 +142,7 @@ def move_to(hwnd, x, y, w, h, repaint=True):
 
 
 def set_cursor_pos(x, y):
-    SetCursorPos((int(x), int(y)))
+    SetCursorPos(int(x), int(y))
 
 
 def set_text(hwnd, text):

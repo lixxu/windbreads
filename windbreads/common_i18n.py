@@ -8,6 +8,7 @@ Common translation text
 
 en = {'&Language': '&Language (语言)'}
 zh = {'&Settings...': '设置 (&S)',
+      'Settings': '设置',
       '&Update settings': '更改设置 (&U)',
       'Update settings': '更改设置',
       'Updating settings...': '更改设置 ...',
@@ -90,6 +91,7 @@ zh = {'&Settings...': '设置 (&S)',
       'End': '结束',
       '&Stop': '停止 (&S)',
       'Stop': '停止',
+      'Hide': '隐藏',
       'Stopped': '已停止',
       'Finished': '完成',
       'failed': '失败',

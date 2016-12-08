@@ -164,3 +164,7 @@ def send_text(hwnd, text, enter=False):
     if enter:
         win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, win32con.VK_RETURN, 0)
         win32gui.PostMessage(hwnd, win32con.WM_KEYUP, win32con.VK_RETURN, 0)
+
+
+def enable_handler(hwnd, enable=True):
+    return win32gui.EnableWindow(hwnd, enable)

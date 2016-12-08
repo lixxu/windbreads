@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import sys
 import ctypes
 import win32gui
+import win32api
 import win32con
 import win32process
 import win32com.client
@@ -168,3 +169,8 @@ def send_text(hwnd, text, enter=False):
 
 def enable_handler(hwnd, enable=True):
     return win32gui.EnableWindow(hwnd, enable)
+
+
+def click_button(hwnd):
+    win32api.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0, 0)
+    win32api.PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, 0)

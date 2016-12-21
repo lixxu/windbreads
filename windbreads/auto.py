@@ -174,3 +174,7 @@ def enable_handler(hwnd, enable=True):
 def click_button(hwnd):
     win32api.PostMessage(hwnd, win32con.WM_LBUTTONDOWN, 0, 0)
     win32api.PostMessage(hwnd, win32con.WM_LBUTTONUP, 0, 0)
+
+
+def is_enabled(hwnd):
+    return win32gui.IsWindowEnabled(hwnd)

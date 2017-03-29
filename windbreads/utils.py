@@ -9,8 +9,17 @@ from functools import partial
 import subprocess
 import platform
 import pickle
-import chardet
-import common_i18n
+try:
+    import chardet
+except ImportError:
+    pass
+
+try:
+    import psutil
+except ImportError:
+    pass
+
+import windbreads.common_i18n as common_i18n
 
 
 def detect_encoding(text):
@@ -134,6 +143,21 @@ def make_shortcut(lnk_path, target, w_dir, icon=None):
     shortcut.save()
 
 
+def get_users_startup_folders():
+    release = platform.release()
+    if release == '7':
+        subs = r'AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
+    elif release in ('XP', '2003Server'):
+        subs = r'Start Menu\Programs\Startup'
+    else:
+        return []
+
+    root_folder = os.path.dirname(os.environ['USERPROFILE'])
+    users = [fd for fd in os.listdir(root_folder)
+             if os.path.isdir(os.path.join(root_folder, fd))]
+    return [os.path.join(root_folder, user, subs) for user in users]
+
+
 def get_startup_folder(all_user=False):
     release = platform.release()
     if release == '7':  # win7, win2008, ...
@@ -164,3 +188,22 @@ def get_win7_startup(all_user=False):
 
 def get_win2k3_startup(all_user=False):
     return get_xp_startup(all_user)
+
+
+def get_processes(name=None, attrs=['pid', 'name']):
+    processes = []
+    for proc in psutil.process_iter():
+        try:
+            pinfo = proc.as_dict(attrs=attrs)
+        except psutil.NoSuchProcess:
+            pass
+        else:
+            if name:
+                if pinfo['name'] == name:
+                    processes.append(pinfo)
+
+                continue
+
+            processes.append(pinfo)
+
+    return processes

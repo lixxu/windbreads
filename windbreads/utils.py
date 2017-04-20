@@ -9,16 +9,8 @@ from functools import partial
 import subprocess
 import platform
 import pickle
-try:
-    import chardet
-except ImportError:
-    pass
-
-try:
-    import psutil
-except ImportError:
-    pass
-
+import chardet
+import psutil
 import windbreads.common_i18n as common_i18n
 
 

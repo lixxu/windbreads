@@ -22,7 +22,7 @@ setup(
     packages=['windbreads'],
     zip_safe=False,
     platforms='any',
-    install_requires=[],
+    install_requires=['chardet', 'psutil'],
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',

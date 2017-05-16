@@ -94,7 +94,7 @@ def get_copy_right(text=None):
 
 
 def get_platform_info():
-    return '{} ({})\n{}'.format(platform.platform(),
+    return '{} ({})\n- {}'.format(platform.platform(),
                                 platform.machine(),
                                 platform.processor())
 

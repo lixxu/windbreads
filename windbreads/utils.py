@@ -13,6 +13,16 @@ import chardet
 import psutil
 import windbreads.common_i18n as common_i18n
 
+IS_PY2 = sys.version_info[0] == 2
+
+
+def safe_unicode():
+    return unicode if IS_PY2 else str
+
+
+def safe_basestring():
+    return basestring if IS_PY2 else str
+
 
 def detect_encoding(text):
     return chardet.detect(text)
@@ -21,7 +31,7 @@ def detect_encoding(text):
 def get_app_dir():
     app_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
     fs_encoding = sys.getfilesystemencoding()
-    if not isinstance(app_dir, unicode):
+    if not isinstance(app_dir, safe_unicode()):
         app_dir = app_dir.decode(fs_encoding)
 
     return app_dir

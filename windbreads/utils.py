@@ -95,8 +95,8 @@ def get_copy_right(text=None):
 
 def get_platform_info():
     return '{} ({})\n- {}'.format(platform.platform(),
-                                platform.machine(),
-                                platform.processor())
+                                  platform.machine(),
+                                  platform.processor())
 
 
 def dump_pickle(data, pk_file, silent=True):

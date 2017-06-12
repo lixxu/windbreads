@@ -12,7 +12,10 @@ import windbreads.utils as wdu
 
 def encrypt(text, key, iv, encoding='utf-8'):
     if isinstance(text, wdu.safe_unicode()):
-        text = text.encode(encoding, 'ignore')
+        if wdu.IS_PY2:
+            text = text.encode(encoding, 'ignore')
+        elif wdu.IS_PY3:
+            text = bytes(text, encoding, 'ignore')
 
     return AES.new(key, AES.MODE_CFB, iv).encrypt(text)
 

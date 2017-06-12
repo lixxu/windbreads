@@ -9,11 +9,16 @@ from functools import partial
 import subprocess
 import platform
 import pickle
-import chardet
-import psutil
+try:
+    import chardet
+except ImportError:
+    pass
+
 import windbreads.common_i18n as common_i18n
 
 IS_PY2 = sys.version_info[0] == 2
+IS_PY3 = sys.version_info[0] == 3
+NEW_LINE = bytes('\n', 'utf-8') if IS_PY3 else '\n'
 
 
 def safe_unicode():
@@ -194,6 +199,11 @@ def get_win2k3_startup(all_user=False):
 
 def get_processes(name=None, attrs=['pid', 'name']):
     processes = []
+    try:
+        import psutil
+    except ImportError:
+        return processes
+
     for proc in psutil.process_iter():
         try:
             pinfo = proc.as_dict(attrs=attrs)

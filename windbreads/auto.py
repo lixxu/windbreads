@@ -9,6 +9,7 @@ import win32api
 import win32con
 import win32process
 import win32com.client
+import windbreads.utils as wdu
 
 FS_CODING = sys.getfilesystemencoding()
 EnumWindows = ctypes.windll.user32.EnumWindows
@@ -158,7 +159,7 @@ def send_chars(hwnd, text, enter=False):
 
 
 def send_text(hwnd, text, enter=False):
-    if isinstance(text, unicode):
+    if isinstance(text, wdu.safe_unicode()):
         text = text.encode(FS_CODING)
 
     win32gui.SendMessage(hwnd, win32con.WM_SETTEXT, 0, text)

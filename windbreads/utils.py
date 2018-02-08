@@ -117,17 +117,17 @@ def get_platform_info():
 def dump_pickle(data, pk_file, silent=True):
     try:
         with open(pk_file, 'wb') as f:
-            pickle.dump(data, f)
+            pickle.dump(data, f, protocol=2)
 
     except:
         if not silent:
             raise
 
 
-def load_pickle(pk_file, silent=True):
+def load_pickle(pk_file, silent=True, **kwargs):
     try:
         with open(pk_file, 'rb') as f:
-            return pickle.load(f)
+            return pickle.load(f, **kwargs)
 
     except:
         if silent:

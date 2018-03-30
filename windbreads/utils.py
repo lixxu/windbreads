@@ -2,31 +2,22 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import sys
+from functools import partial
 import os
 import os.path
-from functools import partial
-import subprocess
-import platform
 import pickle
+import platform
+import subprocess
+import sys
 try:
     import chardet
 except ImportError:
     pass
 
+import six
 import windbreads.common_i18n as common_i18n
 
-IS_PY2 = sys.version_info[0] == 2
-IS_PY3 = sys.version_info[0] == 3
-NEW_LINE = bytes('\n', 'utf-8') if IS_PY3 else '\n'
-
-
-def safe_unicode():
-    return unicode if IS_PY2 else str
-
-
-def safe_basestring():
-    return basestring if IS_PY2 else str
+NEW_LINE = bytes('\n', 'utf-8') if six.PY3 else '\n'
 
 
 def detect_encoding(text):
@@ -36,7 +27,7 @@ def detect_encoding(text):
 def get_app_dir():
     app_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
     fs_encoding = sys.getfilesystemencoding()
-    if not isinstance(app_dir, safe_unicode()):
+    if not isinstance(app_dir, six.text_type):
         app_dir = app_dir.decode(fs_encoding)
 
     return app_dir

@@ -17,7 +17,7 @@ except ImportError:
 import six
 import windbreads.common_i18n as common_i18n
 
-NEW_LINE = bytes('\n', 'utf-8') if six.PY3 else '\n'
+NEW_LINE = bytes(os.linesep, 'utf-8') if six.PY3 else os.linesep
 
 
 def detect_encoding(text):
@@ -110,7 +110,7 @@ def dump_pickle(data, pk_file, silent=True):
         with open(pk_file, 'wb') as f:
             pickle.dump(data, f, protocol=2)
 
-    except:
+    except Exception:
         if not silent:
             raise
 
@@ -120,7 +120,7 @@ def load_pickle(pk_file, silent=True, **kwargs):
         with open(pk_file, 'rb') as f:
             return pickle.load(f, **kwargs)
 
-    except:
+    except Exception:
         if silent:
             return {}
 

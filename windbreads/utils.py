@@ -96,7 +96,7 @@ def get_lang_key(name):
 
 
 def get_copy_right(text=None):
-    return text if text else '(C) Nypro & Jabil Shanghai TE Support'
+    return text if text else '(C) Jabil Shanghai TE Support'
 
 
 def get_platform_info():

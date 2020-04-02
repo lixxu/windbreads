@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from functools import partial
 import os
 import os.path
 import pickle
 import platform
 import subprocess
 import sys
+from functools import partial
+
 try:
     import chardet
 except ImportError:
@@ -17,7 +18,7 @@ except ImportError:
 import six
 import windbreads.common_i18n as common_i18n
 
-NEW_LINE = bytes(os.linesep, 'utf-8') if six.PY3 else os.linesep
+NEW_LINE = bytes(os.linesep, "utf-8") if six.PY3 else os.linesep
 
 
 def detect_encoding(text):
@@ -77,37 +78,37 @@ def ttt(text, t=None):
     return t(text) if t else text
 
 
-def get_lang_list(names=['en', 'zh']):
+def get_lang_list(names=["en", "zh"]):
     return [get_lang_name(lang) for lang in names]
 
 
 def get_lang_name(lang):
-    if lang == 'zh':
-        return 'Chinese - 简体中文'
+    if lang == "zh":
+        return "Chinese - 简体中文"
     else:
-        return 'English'
+        return "English"
 
 
 def get_lang_key(name):
-    if 'Chinese' in name or 'Simplied' in name:
-        return 'zh'
+    if "Chinese" in name or "Simplied" in name:
+        return "zh"
 
-    return 'en'
+    return "en"
 
 
 def get_copy_right(text=None):
-    return text if text else '(C) Jabil Shanghai TE Support'
+    return text if text else "(C) Jabil Shanghai TE Support"
 
 
 def get_platform_info():
-    return '{} ({})\n- {}'.format(platform.platform(),
-                                  platform.machine(),
-                                  platform.processor())
+    return "{} ({})\n- {}".format(
+        platform.platform(), platform.machine(), platform.processor()
+    )
 
 
 def dump_pickle(data, pk_file, silent=True):
     try:
-        with open(pk_file, 'wb') as f:
+        with open(pk_file, "wb") as f:
             pickle.dump(data, f, protocol=2)
 
     except Exception:
@@ -117,7 +118,7 @@ def dump_pickle(data, pk_file, silent=True):
 
 def load_pickle(pk_file, silent=True, **kwargs):
     try:
-        with open(pk_file, 'rb') as f:
+        with open(pk_file, "rb") as f:
             return pickle.load(f, **kwargs)
 
     except Exception:
@@ -130,7 +131,7 @@ def load_pickle(pk_file, silent=True, **kwargs):
 def make_shortcut(lnk_path, target, w_dir, icon=None):
     from win32com.client import Dispatch
 
-    shell = Dispatch('WScript.Shell')
+    shell = Dispatch("WScript.Shell")
     shortcut = shell.CreateShortCut(lnk_path)
     shortcut.Targetpath = target
     shortcut.WorkingDirectory = w_dir
@@ -143,43 +144,46 @@ def make_shortcut(lnk_path, target, w_dir, icon=None):
 
 def get_users_startup_folders():
     release = platform.release()
-    if release == '7':
-        subs = r'AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
-    elif release in ('XP', '2003Server'):
-        subs = r'Start Menu\Programs\Startup'
+    if release == "7":
+        subs = r"AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
+    elif release in ("XP", "2003Server"):
+        subs = r"Start Menu\Programs\Startup"
     else:
         return []
 
-    root_folder = os.path.dirname(os.environ['USERPROFILE'])
-    users = [fd for fd in os.listdir(root_folder)
-             if os.path.isdir(os.path.join(root_folder, fd))]
+    root_folder = os.path.dirname(os.environ["USERPROFILE"])
+    users = [
+        fd
+        for fd in os.listdir(root_folder)
+        if os.path.isdir(os.path.join(root_folder, fd))
+    ]
     return [os.path.join(root_folder, user, subs) for user in users]
 
 
 def get_startup_folder(all_user=False):
     release = platform.release()
-    if release == '7':  # win7, win2008, ...
+    if release == "7":  # win7, win2008, ...
         return get_win7_startup(all_user)
-    elif release == 'XP':
+    elif release == "XP":
         return get_xp_startup(all_user)
-    elif release == '2003Server':
+    elif release == "2003Server":
         return get_win2k3_startup(all_user)
     else:
-        return 'Not implemented'
+        return "Not implemented"
 
 
 def get_xp_startup(all_user=False):
-    folder = os.environ['ALLUSERSPROFILE' if all_user else 'USERPROFILE']
-    return os.path.join(folder, 'Start Menu', 'Programs', 'Startup')
+    folder = os.environ["ALLUSERSPROFILE" if all_user else "USERPROFILE"]
+    return os.path.join(folder, "Start Menu", "Programs", "Startup")
 
 
 def get_win7_startup(all_user=False):
     if all_user:
-        folder = os.environ['ALLUSERSPROFILE']
-        subs = r'Microsoft\Windows\Start Menu\Programs\Startup'
+        folder = os.environ["ALLUSERSPROFILE"]
+        subs = r"Microsoft\Windows\Start Menu\Programs\Startup"
     else:
-        folder = os.environ['USERPROFILE']
-        subs = r'AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup'
+        folder = os.environ["USERPROFILE"]
+        subs = r"AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
 
     return os.path.join(folder, subs)
 
@@ -188,7 +192,7 @@ def get_win2k3_startup(all_user=False):
     return get_xp_startup(all_user)
 
 
-def get_processes(name=None, attrs=['pid', 'name']):
+def get_processes(name=None, attrs=["pid", "name"]):
     processes = []
     try:
         import psutil
@@ -202,7 +206,7 @@ def get_processes(name=None, attrs=['pid', 'name']):
             pass
         else:
             if name:
-                if pinfo['name'] == name:
+                if pinfo["name"] == name:
                     processes.append(pinfo)
 
                 continue

@@ -2,20 +2,21 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-import sys
 import ctypes
+import sys
+
 import six
 import win32api
 import win32com.client
 import win32con
 import win32gui
 import win32process
-import windbreads.utils as wdu
 
 FS_CODING = sys.getfilesystemencoding()
 EnumWindows = ctypes.windll.user32.EnumWindows
-EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int,
-                                     ctypes.POINTER(ctypes.c_int))
+EnumWindowsProc = ctypes.WINFUNCTYPE(
+    ctypes.c_bool, ctypes.c_int, ctypes.POINTER(ctypes.c_int)
+)
 GetWindowText = ctypes.windll.user32.GetWindowTextW
 GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
 IsWindowVisible = ctypes.windll.user32.IsWindowVisible
@@ -27,26 +28,27 @@ def get_child(parent=0, child=None, cls_name=None, window_name=None):
     return win32gui.FindWindowEx(parent, child, cls_name, window_name)
 
 
-def get_text(hwnd, safe=True, safe_text=''):
+def get_text(hwnd, safe=True, safe_text=""):
     try:
-        buf_size = 1 + win32gui.SendMessage(hwnd, win32con.WM_GETTEXTLENGTH,
-                                            0, 0)
+        buf_size = 1 + win32gui.SendMessage(
+            hwnd, win32con.WM_GETTEXTLENGTH, 0, 0
+        )
         buf = win32gui.PyMakeBuffer(buf_size)
         win32gui.SendMessage(hwnd, win32con.WM_GETTEXT, buf_size, buf)
-        return buf[:buf_size - 1]
-    except:
+        return buf[: buf_size - 1]
+    except Exception:
         if safe:
             return safe_text
 
         raise
 
 
-def compare_text(src, dst, rule='=', re_rule=None):
-    if rule == 'startswith':
+def compare_text(src, dst, rule="=", re_rule=None):
+    if rule == "startswith":
         return src.startswith(dst)
-    elif rule == 'endswith':
+    elif rule == "endswith":
         return src.endswith(dst)
-    elif rule == 're':
+    elif rule == "re":
         return re_rule.match(src)
     else:
         return src == dst
@@ -63,7 +65,7 @@ def show_window_by_pid(pid):
 
 def bring_foreground(hwnd):
     shell = win32com.client.Dispatch("WScript.Shell")
-    shell.SendKeys('%')
+    shell.SendKeys("%")
     win32gui.SetForegroundWindow(hwnd)
 
 
@@ -94,7 +96,7 @@ def get_all_handlers(visible=True):
     return handlers
 
 
-def find_handler(dst, rule='=', re_rule=None, debug=False, visible=True):
+def find_handler(dst, rule="=", re_rule=None, debug=False, visible=True):
     for hwnd, text in get_all_handlers(visible):
         if compare_text(text, dst, rule, re_rule):
             return hwnd
@@ -120,16 +122,16 @@ def get_foreground_window():
     return win32gui.GetForegroundWindow()
 
 
-def get_window_text(hwnd, safe_text=''):
+def get_window_text(hwnd, safe_text=""):
     return win32gui.GetWindowText(hwnd) or safe_text
 
 
 def get_class_name(hwnd, safe=True):
     try:
         return win32gui.GetClassName(hwnd)
-    except:
+    except Exception:
         if safe:
-            return ''
+            return ""
 
         raise
 

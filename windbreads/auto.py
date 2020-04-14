@@ -104,6 +104,10 @@ def find_handler(dst, rule="=", re_rule=None, debug=False, visible=True):
     return None
 
 
+def focus_handler(hwnd):
+    win32gui.BringWindowToTop(hwnd)
+
+
 def is_visible(hwnd):
     return win32gui.IsWindowVisible(hwnd)
 

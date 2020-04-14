@@ -112,6 +112,7 @@ zh = {
     "Please login": "请登录",
     "Changes": "变更",
     "Options": "选项",
+    "Please stop current running task": "请停止当前正在运行的任务",
 }
 
 zh.update({k.lower(): v for k, v in zh.items()})

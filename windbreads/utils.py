@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+
 import os
 import os.path
 import pickle
@@ -16,6 +17,7 @@ except ImportError:
     pass
 
 import six
+
 import windbreads.common_i18n as common_i18n
 
 NEW_LINE = bytes(os.linesep, "utf-8") if six.PY3 else os.linesep
@@ -144,7 +146,7 @@ def make_shortcut(lnk_path, target, w_dir, icon=None):
 
 def get_users_startup_folders():
     release = platform.release()
-    if release == "7":
+    if release in ("7", "8", "10"):
         subs = r"AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"
     elif release in ("XP", "2003Server"):
         subs = r"Start Menu\Programs\Startup"
@@ -162,7 +164,7 @@ def get_users_startup_folders():
 
 def get_startup_folder(all_user=False):
     release = platform.release()
-    if release == "7":  # win7, win2008, ...
+    if release in ("7", "8", "10"):  # win7, win2008, ...
         return get_win7_startup(all_user)
     elif release == "XP":
         return get_xp_startup(all_user)

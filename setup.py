@@ -8,6 +8,7 @@ windbreads
 Small handy snippets of non-GUI python
 """
 import os.path
+
 from setuptools import setup
 
 folder = os.path.dirname(os.path.abspath(__file__))

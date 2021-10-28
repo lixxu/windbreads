@@ -99,7 +99,7 @@ def get_lang_key(name):
 
 
 def get_copy_right(text=None):
-    return text if text else "(C) Jabil Shanghai TE Support"
+    return text if text else "(C) A company"
 
 
 def get_platform_info():

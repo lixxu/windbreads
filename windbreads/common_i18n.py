@@ -111,6 +111,7 @@ zh = {
     "Restore": "还原",
     "Please login": "请登录",
     "Changes": "变更",
+    "Changelog": "变更历史",
     "Options": "选项",
     "Please stop current running task": "请停止当前正在运行的任务",
 }
